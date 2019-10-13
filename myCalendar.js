@@ -1,4 +1,6 @@
-// Defining variables
+// Defining Vriables
+
+planner_page = new Array();
 
 // Construct Arrays
 function build_calendar_array()
@@ -22,13 +24,11 @@ function build_calendar_array()
                 {
                     myHours[hr_cnt] = hr_cnt;
                 }
-                myDays[day_cnt] = {"day" : day_cnt, "hours":myHours};
+                myDays[day_cnt] = [myHours];
             }
-            myMonths[mnth_cnt] = {"month": mnth_cnt, "mDays": myDays};
+            myMonths[mnth_cnt] = [myDays];
         }
-        myYears[yr_cnt] = {
-            "year" : yr_cnt,
-            "months" : myMonths};
+        myYears[yr_cnt] = [myMonths];
     }
     return myYears;
 }
@@ -67,31 +67,64 @@ function today()
 
     let myTime = new Date();
     let dspTime;
-    for (i=0; i < 24; i++)
+    for (i=0; i <= 24; i++)
     {
         let currentTime = new Date();
         let act_hour = i + 1;
         myTime.setHours(i, 0, 0, 0);
         dspTime = myTime.toLocaleString([], { hour: '2-digit', minute: '2-digit' });
-
-        $(`<div class="card" id="time-block">${dspTime}<input class="card time-block" id="event" name="${dspTime}" type="text" value="" /></div>`).appendTo("#day-view");
+        debugger;
+        $(`<div class="card ${setTimeBlockColour(currentTime.getHours(), i)}" id="time-block">${dspTime}<input class="card time-block" id="event" name="time-slot" type="text" value="" /><button id="save_btn" class="saveBtn" onclick="save_event(${i})">Save Entry</button></div>`).appendTo("#day-view");
         // myYears[theyear].myMonths[themonth].myDays[theday].myHours[i];
 
-        if (currentTime.getHours()% 12 || 12 > act_hour && act_hour >= 9)
-        {
-            $("#time_block").css("background", "red");
-        }
-        else if (currentTime.getHours()% 12 || 12 > act_hour && act_hour < 9)
-        {
-            $("#time_block").css("background", "grey");
-        }
-        else if (currentTime.getHours()% 12 || 12 < act_hour && act_hour < 17)
-        {
-            $("#time_block").css("background", "lightgreen");
-        }
+        // if (currentTime.getHours() > act_hour && act_hour >= 9)
+        // {
+        //     $("#time-block").css("background", "red");
+        // }
+        // else if (currentTime.getHours() > act_hour && act_hour < 9)
+        // {
+        //     $("#time-block").css("background", "grey");
+        // }
+        // else if (currentTime.getHours() < act_hour && act_hour < 17)
+        // {
+        //     $("#time-block").css("background", "lightgreen");
+        // }
+
+        planner_page[i] = {"hour":i, "event":$("#event input[name=time-slot]").val()}
+
+
+
     }
 
 }
 
+function setTimeBlockColour(currentHour, timeBlockHour)
+{
+    if (currentHour > timeBlockHour && timeBlockHour >= 9)
+    {
+        return "past";
+    }
+    else if (currentHour > timeBlockHour && timeBlockHour < 9)
+    {
+        return "past";
+    }
+    else if (currentHour == timeBlockHour)
+    {
+        return "present";
+    }
+    else if (currentHour < timeBlockHour && timeBlockHour < 17)
+    {
+        return "future";
+    }
+    else
+    {
+        return "future";        
+    }
+};
+
+function save_event()
+{
+ alert(i)
+};
 
 $( document ).ready( today );

@@ -63,6 +63,9 @@ body {
     border-bottom-right-radius: 15px;
     background-color: #06AED5;
     color: white;
+    width: 6vw;
+    top: 0;
+    float: right;
   }
   
   .saveBtn i:hover {
@@ -70,3 +73,26 @@ body {
     transition: all .3s ease-in-out;
   }
   
+  #event
+{
+    display:flex; 
+    flex-direction:row;
+    flex-basis: 2vw;
+}
+
+#btn_frame
+{
+    width: 25%;
+    padding: 2vw;
+    justify-content: space-between;
+}
+
+#time-block
+{
+  width:80%;
+  display:flex;
+  flex-grow: initial;
+  font: black;
+  font:bold;
+  justify-content: space-between;
+}
