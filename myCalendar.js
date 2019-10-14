@@ -1,130 +1,99 @@
 // Defining Vriables
 
 planner_page = new Array();
-
-// Construct Arrays
-function build_calendar_array()
-{
-    function daysInMonth (year, month) { 
-        return new Date(year, month, 0).getDate(); 
-    } 
-    // debugger;
-    var myYears = new Array();
-    for (yr_cnt = 2019; yr_cnt <= 2022; yr_cnt++)
-    {
-        var myMonths = new Array();
-        for (mnth_cnt = 0; mnth_cnt < 12; mnth_cnt++)
-        {
-            var days_hldr = daysInMonth(yr_cnt, mnth_cnt+1);
-            var myDays = new Array();
-            for (day_cnt = 0; day_cnt < days_hldr; day_cnt++)
-            {
-                var myHours = new Array();
-                for (hr_cnt = 0; hr_cnt < 24; hr_cnt++)
-                {
-                    myHours[hr_cnt] = hr_cnt;
-                }
-                myDays[day_cnt] = [myHours];
-            }
-            myMonths[mnth_cnt] = [myDays];
-        }
-        myYears[yr_cnt] = [myMonths];
-    }
-    return myYears;
-}
-
-function showDay(theyear, themonth, theday)
-{
-    $("#day-view").empty();
-    debugger;
-    var arr_hldr = build_calendar_array();
-    if (!localStorage.myDayPlanner)
-    {
-        localStorage.setItem("myDayPlanner", JSON.stringify(build_calendar_array()));
-        myCalendar = JSON.parse(localStorage.getItem("myDayPlanner"));
-    }
-    else
-    {
-        myCalendar = JSON.parse(localStorage.getItem("myDayPlanner"));
-    };
-
-    for (i=0; i < 24; i++)
-    {
-        $(`<input id="event" type="text" value="${myCalendar[theyear].myMonths[themonth].myDays[theday].myHours[i]}" />`).appendTo("day-view");
-        // myYears[theyear].myMonths[themonth].myDays[theday].myHours[i];
-    }
-}
+page_to_write =  new Array();
 
 function today()
 {
-    var currentDate = new Date();
-    // showDay(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDay());
-    // for (i=0; i < 24; i++)
-    // {
-    //     $(`<input id="event" type="text" value="${myCalendar[theyear].myMonths[themonth].myDays[theday].myHours[i]}" />`).appendTo("day-view");
-    //     // myYears[theyear].myMonths[themonth].myDays[theday].myHours[i];
-    // }
-
+    $("#calendar-header").html(moment().format('MMMM Do YYYY, h:mm:ss a'));
+    rightNow = setInterval(showCurrentDate, 1000);
     let myTime = new Date();
     let dspTime;
-    for (i=0; i <= 24; i++)
+
+    if (!localStorage.myDay)
+    {
+        var newPage = true;
+    }
+    else
+    {
+        var newPage = false;
+        planner_page = JSON.parse(localStorage.getItem("myDay"));
+        page_to_write = JSON.parse(localStorage.getItem("myDay"));
+    }
+
+    $("#day-view").empty();
+    for (i=9; i < 18; i++)
     {
         let currentTime = new Date();
         let act_hour = i + 1;
         myTime.setHours(i, 0, 0, 0);
         dspTime = myTime.toLocaleString([], { hour: '2-digit', minute: '2-digit' });
-        debugger;
-        $(`<div class="card ${setTimeBlockColour(currentTime.getHours(), i)}" id="time-block">${dspTime}<input class="card time-block" id="event" name="time-slot" type="text" value="" /><button id="save_btn" class="saveBtn" onclick="save_event(${i})">Save Entry</button></div>`).appendTo("#day-view");
-        // myYears[theyear].myMonths[themonth].myDays[theday].myHours[i];
 
-        // if (currentTime.getHours() > act_hour && act_hour >= 9)
-        // {
-        //     $("#time-block").css("background", "red");
-        // }
-        // else if (currentTime.getHours() > act_hour && act_hour < 9)
-        // {
-        //     $("#time-block").css("background", "grey");
-        // }
-        // else if (currentTime.getHours() < act_hour && act_hour < 17)
-        // {
-        //     $("#time-block").css("background", "lightgreen");
-        // }
-
-        planner_page[i] = {"hour":i, "event":$("#event input[name=time-slot]").val()}
-
-
-
+        if (newPage)
+        {
+            $(`<div class="card ${setTimeBlockColour(currentTime.getHours(), i)}" id="time-block">${dspTime}<input class="card time-block" id="event" name="${i}" type="text" value=" " placeholder="Free Time Slot" onchange="post_event()"/><button id="save_btn" class="saveBtn" value="${i}" onclick="save_event()">Save Entry</button></div>`).appendTo("#day-view");
+            planner_page[i] = {"hour":i, "event":$("#event input[name=time-slot]").val()};
+            page_to_write[i] = {"hour":i, "event":$("#event input[name=time-slot]").val()};
+        }
+        else
+        {
+            if (planner_page[i].event)
+            {
+                $(`<div class="card ${setTimeBlockColour(currentTime.getHours(), i)}" id="time-block">${dspTime}<input class="card time-block" id="event" name="${i}" type="text" value="${planner_page[i].event}" placeholder="Free Time Slot" onchange="post_event()"/><button id="save_btn" class="saveBtn" value="${i}" onclick="save_event()">Save Entry</button></div>`).appendTo("#day-view");
+            }
+            else
+            {
+                $(`<div class="card ${setTimeBlockColour(currentTime.getHours(), i)}" id="time-block">${dspTime}<input class="card time-block" id="event" name="${i}" type="text" value=" " placeholder="Free Time Slot" onchange="post_event()"/><button id="save_btn" class="saveBtn" value="${i}" onclick="save_event()">Save Entry</button></div>`).appendTo("#day-view");
+            }
+        };
     }
-
 }
 
 function setTimeBlockColour(currentHour, timeBlockHour)
 {
-    if (currentHour > timeBlockHour && timeBlockHour >= 9)
+    if (currentHour > timeBlockHour && (timeBlockHour >= 9 && timeBlockHour <= 17))
     {
         return "past";
     }
-    else if (currentHour > timeBlockHour && timeBlockHour < 9)
-    {
-        return "past";
-    }
+    // else if (currentHour > timeBlockHour && timeBlockHour < 9)
+    // {
+    //     return "past";
+    // }
     else if (currentHour == timeBlockHour)
     {
         return "present";
     }
-    else if (currentHour < timeBlockHour && timeBlockHour < 17)
+    else if (currentHour < timeBlockHour && timeBlockHour <= 17)
     {
         return "future";
     }
-    else
-    {
-        return "future";        
-    }
+    // else if (timeBlockHour > 17)
+    // {
+    //     return "past";        
+    // }
+
+};
+
+function showCurrentDate()
+{
+    $("#calendar-header").html(moment().format('MMMM Do YYYY, h:mm:ss a'));
+}
+
+function post_event()
+{
+    event.preventDefault();
+    planner_page[event.target.name].event = event.target.value;
 };
 
 function save_event()
 {
- alert(i)
+    event.preventDefault();
+    page_to_write[event.target.value].event = planner_page[event.target.value].event;
+    localStorage.setItem("myDay", JSON.stringify(page_to_write));
+
+    planner_page = JSON.parse(localStorage.getItem("myDay"));
+    page_to_write = JSON.parse(localStorage.getItem("myDay"));
+
 };
 
 $( document ).ready( today );
