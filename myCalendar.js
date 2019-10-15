@@ -29,7 +29,7 @@ function today()
 
         if (newPage)
         {
-            $(`<div class="card ${setTimeBlockColour(currentTime.getHours(), i)}" id="time-block">${dspTime}<input class="card time-block" id="event" name="${i}" type="text" value=" " placeholder="Free Time Slot" onchange="post_event()"/><button id="save_btn" class="saveBtn" value="${i}" onclick="save_event()">Save Entry</button></div>`).appendTo("#day-view");
+            $(`<div class="card ${setTimeBlockColour(currentTime.getHours(), i)}" id="time-block">${dspTime}<input class="card time-block" id="event" name="${i}" type="text" value="" placeholder="Free Time Slot" onchange="post_event()"/><button id="save_btn" class="saveBtn" value="${i}" onclick="save_event()">Save Entry</button></div>`).appendTo("#day-view");
             planner_page[i] = {"hour":i, "event":$("#event input[name=time-slot]").val()};
             page_to_write[i] = {"hour":i, "event":$("#event input[name=time-slot]").val()};
         }
@@ -41,7 +41,7 @@ function today()
             }
             else
             {
-                $(`<div class="card ${setTimeBlockColour(currentTime.getHours(), i)}" id="time-block">${dspTime}<input class="card time-block" id="event" name="${i}" type="text" value=" " placeholder="Free Time Slot" onchange="post_event()"/><button id="save_btn" class="saveBtn" value="${i}" onclick="save_event()">Save Entry</button></div>`).appendTo("#day-view");
+                $(`<div class="card ${setTimeBlockColour(currentTime.getHours(), i)}" id="time-block">${dspTime}<input class="card time-block" id="event" name="${i}" type="text" value="" placeholder="Free Time Slot" onchange="post_event()"/><button id="save_btn" class="saveBtn" value="${i}" onclick="save_event()">Save Entry</button></div>`).appendTo("#day-view");
             }
         };
     }
