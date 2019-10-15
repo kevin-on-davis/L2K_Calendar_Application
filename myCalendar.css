@@ -47,16 +47,11 @@ body {
     color: white;
   }
 
-  .workday {
-    background-color: #a097eb;
+  .nonworkhour {
+    background-color: gold;
     color: white;
   }
 
-  /* .event_planned
-  {
-    font-style: italic;
-  } */
-  
   .present {
     background-color: #ff6961;
     color: white;
@@ -93,7 +88,7 @@ body {
 #btn_frame
 {
     width: 25%;
-    padding: 2vw;
+    /* padding: 2vw; */
     justify-content: space-between;
 }
 
@@ -110,4 +105,9 @@ body {
 #calendar-header
 {
   font-size: 3vw;
+}
+
+.btn_class
+{
+  margin :1%;
 }

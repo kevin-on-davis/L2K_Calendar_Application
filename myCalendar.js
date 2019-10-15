@@ -5,8 +5,6 @@ page_to_write =  new Array();
 
 function today()
 {
-    $("#calendar-header").html(moment().format('MMMM Do YYYY, h:mm:ss a'));
-    rightNow = setInterval(showCurrentDate, 1000);
     let myTime = new Date();
     let dspTime;
 
@@ -22,7 +20,7 @@ function today()
     }
 
     $("#day-view").empty();
-    for (i=9; i < 18; i++)
+    for (i=0; i < 24; i++)
     {
         let currentTime = new Date();
         let act_hour = i + 1;
@@ -39,7 +37,7 @@ function today()
         {
             if (planner_page[i].event)
             {
-                $(`<div class="card ${setTimeBlockColour(currentTime.getHours(), i)}" id="time-block">${dspTime}<input class="card time-block" id="event" name="${i}" type="text" value="${planner_page[i].event}" placeholder="Free Time Slot" onchange="post_event()"/><button id="save_btn" class="saveBtn" value="${i}" onclick="save_event()">Save Entry</button></div>`).appendTo("#day-view");
+                $(`<div class="card ${setTimeBlockColour(currentTime.getHours(), i)}" style="font-style:italic" id="time-block">${dspTime}<input class="card time-block" id="event" name="${i}" type="text" value="${planner_page[i].event}" placeholder="Free Time Slot" onchange="post_event()"/><button id="save_btn" class="saveBtn" value="${i}" onclick="save_event()">Save Entry</button></div>`).appendTo("#day-view");
             }
             else
             {
@@ -47,6 +45,7 @@ function today()
             }
         };
     }
+    rightNow = setInterval(showCurrentDate, 1000);
 }
 
 function setTimeBlockColour(currentHour, timeBlockHour)
@@ -55,10 +54,10 @@ function setTimeBlockColour(currentHour, timeBlockHour)
     {
         return "past";
     }
-    // else if (currentHour > timeBlockHour && timeBlockHour < 9)
-    // {
-    //     return "past";
-    // }
+    else if (timeBlockHour < 9)
+    {
+        return "nonworkhour";
+    }
     else if (currentHour == timeBlockHour)
     {
         return "present";
@@ -67,10 +66,10 @@ function setTimeBlockColour(currentHour, timeBlockHour)
     {
         return "future";
     }
-    // else if (timeBlockHour > 17)
-    // {
-    //     return "past";        
-    // }
+    else if (timeBlockHour > 17)
+    {
+        return "nonworkhour";        
+    }
 
 };
 
